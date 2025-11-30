@@ -34,23 +34,28 @@ export const ContactForm = () => {
     setIsSubmitting(true);
     
     try {
-      const response = await fetch("https://formbold.com/s/9XrGr", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
+      await Promise.all([
+        fetch("https://formbold.com/s/9XrGr", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }),
+        fetch("https://forms.fillout.com/t/8cG64Umpvdus", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }),
+      ]);
 
-      if (response.ok) {
-        toast({
-          title: "נשלח בהצלחה!",
-          description: "נחזור אליכם בהקדם",
-        });
-        reset();
-      } else {
-        throw new Error("שליחה נכשלה");
-      }
+      toast({
+        title: "נשלח בהצלחה!",
+        description: "נחזור אליכם בהקדם",
+      });
+      reset();
     } catch (error) {
       toast({
         title: "שגיאה בשליחה",
