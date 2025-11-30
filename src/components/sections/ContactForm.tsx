@@ -34,7 +34,7 @@ export const ContactForm = () => {
     setIsSubmitting(true);
     
     try {
-      await Promise.all([
+      const results = await Promise.allSettled([
         fetch("https://formbold.com/s/9XrGr", {
           method: "POST",
           headers: {
@@ -47,15 +47,22 @@ export const ContactForm = () => {
           headers: {
             "Content-Type": "application/json",
           },
+          mode: "no-cors",
           body: JSON.stringify(data),
         }),
       ]);
 
-      toast({
-        title: "נשלח בהצלחה!",
-        description: "נחזור אליכם בהקדם",
-      });
-      reset();
+      const hasSuccess = results.some(result => result.status === 'fulfilled');
+      
+      if (hasSuccess) {
+        toast({
+          title: "נשלח בהצלחה!",
+          description: "נחזור אליכם בהקדם",
+        });
+        reset();
+      } else {
+        throw new Error("כל הבקשות נכשלו");
+      }
     } catch (error) {
       toast({
         title: "שגיאה בשליחה",
