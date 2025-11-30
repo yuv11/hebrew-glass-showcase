@@ -14,6 +14,7 @@ import { useState } from "react";
 const formSchema = z.object({
   name: z.string().trim().min(1, { message: "נא למלא את השם" }).max(100),
   email: z.string().trim().email({ message: "כתובת מייל לא תקינה" }).max(255),
+  phone: z.string().trim().min(1, { message: "נא למלא מספר טלפון" }).regex(/^(05\d{8}|(\+?972|0)?5\d{8})$/, { message: "מספר טלפון לא תקין" }),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -119,6 +120,23 @@ export const ContactForm = () => {
                 />
                 {errors.email && (
                   <p className="text-sm text-destructive">{errors.email.message}</p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="phone" className="text-foreground">
+                  מספר טלפון
+                </Label>
+                <Input
+                  id="phone"
+                  type="tel"
+                  {...register("phone")}
+                  placeholder="050-1234567"
+                  className="bg-white/5 border-white/10 text-foreground placeholder:text-muted-foreground"
+                  disabled={isSubmitting}
+                />
+                {errors.phone && (
+                  <p className="text-sm text-destructive">{errors.phone.message}</p>
                 )}
               </div>
 
